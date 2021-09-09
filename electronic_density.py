@@ -58,6 +58,25 @@ class ElectronicDensity(object):
                    0.663530875228E+03, 0.111052199211E-01, 1, 0, 10, 0, 4 / 9, 0, 0, 0],
         }
 
+    def _weights(self, element):
+
+        atomic_values = self.atomic_values
+        weights = np.array([atomic_values[element][3], atomic_values[element][5], atomic_values[element][7],
+                                 atomic_values[element][9], atomic_values[element][11]])
+        return weights
+
+    def _valence_weights(self,element):
+        atomic_values=self.atomic_values
+        valence_weights=np.array([atomic_values[element][13],atomic_values[element][14],atomic_values[element][15],atomic_values[element][16],atomic_values[element][17]])
+
+        return valence_weights
+
+    def _core_weights(self, element):
+        weights=self._weights(element)
+        valence_weights= self._valence_weights(element)
+        core_weights=weights-valence_weights
+        return core_weights
+
     def mass_center(self):
         atomic_values=self.atomic_values
         sym_l = np.array(self.molecule.elements)
