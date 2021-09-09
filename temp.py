@@ -13,7 +13,6 @@ class TempFunct(object):
 
         sym_l = self.molecule.elements
         coord_a = np.array(self.molecule.coordinates)
-        nat = len(sym_l)
 
         if cm is None:
             cm=np.array(self.elden.mass_center)
