@@ -27,8 +27,8 @@ class SymOp(object):
         selfsim = 0
         for i in range(nat):
             for j in range(nat):
-                for k in range(5):
-                    for l in range(5):
+                for k in range(7):
+                    for l in range(7):
                         a = 2 * atomic_values[sym_l[i]][2 * (k + 1)]
                         b = 2 * atomic_values[sym_l[j]][2 * (l + 1)]
 
