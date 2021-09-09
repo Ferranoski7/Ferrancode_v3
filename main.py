@@ -12,7 +12,6 @@ llista = ['Li', 'Be', 'B', 'C', 'N', 'O', 'F', 'Ne', 'Mg', 'Al', 'Si', 'P', 'S',
 for atom in range(len(llista)):
     element = [llista[atom]]
     coord_a = [[0, 0, 0]]
-
     element=Molecule(element,coord_a,llista[atom])
     temp_element=TemporalFunction(element)
 
