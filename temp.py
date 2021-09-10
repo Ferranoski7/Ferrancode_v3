@@ -82,18 +82,72 @@ class TemporalFunction(object):
         init = [-10, 0, 0]
         end = [10, 0, 0]
 
-        steps = 401
+        steps = 201
 
         spline, x = self.elden._atom_valence_spline(init, end, steps)
 
-        valence = (atomic_values[element][0] - atomic_values[element][12]) / atomic_values[element][0]
+        valence = (atomic_values[element][0] - atomic_values[element][16]) / atomic_values[element][0]
         resta = 10000000
         itera = 10
 
         print(totalw)
-        i, j, k, l = 0, 0, 0, 0
-        if totalw == 5:
+        i, j, k, l, m, n = 0, 0, 0, 0, 0, 0
+        if totalw == 7:
             for i in range(itera):
+                print(str(int(100 * i / itera)) + ' percent computed')
+                total = valence
+                w1 = i * valence / (itera - 1)
+                total1 = total - w1
+                for j in range(itera):
+                    w2 = j * total1 / (itera - 1)
+                    total2 = total1 - w2
+                    for k in range(itera):
+                        w3 = k * total2 / (itera - 1)
+                        total3 = total2 - w3
+                        for l in range(itera):
+                            w4 = l * total3 / (itera - 1)
+                            total4 = total3 - w4
+                            for m in range(itera):
+                                w5 = m * total4 / (itera - 1)
+                                total5 = total4 - w5
+                                for n in range(itera):
+                                    w6=n * total5 / (itera - 1)
+                                    w7 = total5 - w6
+                                    w = [w1, w2, w3, w4, w5, w6, w7]
+                                    rho, _ = self.linear_densityt(init, end, steps, w)
+                                    if np.abs(rho - spline).sum() < resta:
+                                        resta = np.abs(rho - spline).sum()
+                                        wv = w
+
+
+        elif totalw == 6:
+            for i in range(itera):
+                print(str(int(100*i/itera))+' percent computed')
+                total = valence
+                w1 = i * valence / (itera - 1)
+                total1 = total - w1
+                for j in range(itera):
+                    w2 = j * total1 / (itera - 1)
+                    total2 = total1 - w2
+                    for k in range(itera):
+                        w3 = k * total2 / (itera - 1)
+                        total3 = total2 - w3
+                        for l in range(itera):
+                            w4 = l * total3 / (itera - 1)
+                            total4 = total3 - w4
+                            for m in range(itera):
+                                w5 = m * total4 /(itera - 1)
+                                w6 = total4 - w5
+                                w7 = 0
+                                w = [w1, w2, w3, w4, w5, w6, w7]
+                                rho, _ = self.linear_densityt(init, end, steps, w)
+                                if np.abs(rho - spline).sum() < resta:
+                                    resta = np.abs(rho - spline).sum()
+                                    wv = w
+
+        elif totalw == 5:
+            for i in range(itera):
+                print(str(int(100*i/itera))+' percent computed')
                 total = valence
                 w1 = i * valence / (itera - 1)
                 total1 = total - w1

@@ -26,9 +26,11 @@ class SymOp(object):
         coord_cmrot = rotation(coord_cm, axis, angle)
         selfsim = 0
         for i in range(nat):
+            num_weights1=self.elden.num_weights(sym_l[i])
             for j in range(nat):
-                for k in range(7):
-                    for l in range(7):
+                num_weights2 = self.elden.num_weights(sym_l[i])
+                for k in range(num_weights1):
+                    for l in range(num_weights2):
                         a = 2 * atomic_values[sym_l[i]][2 * (k + 1)]
                         b = 2 * atomic_values[sym_l[j]][2 * (l + 1)]
 
@@ -65,7 +67,7 @@ class SymOp(object):
 
         return invers / ssim
 
-    def xcy(self,X,Y,axis=[0,0,1],cm=None):#2C6
+    def xcy(self,X,Y,axis=[0,0,1],cm=None):
         angle=X*2*np.pi/Y
 
         ssim=self.analytic_selfsym(axis=axis, angle=0, cm=cm)
