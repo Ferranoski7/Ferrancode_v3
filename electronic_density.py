@@ -500,6 +500,12 @@ class ElectronicDensity(object):
             total = 7
         return total
 
+    def _exponents(self,element):
+        atomic_values = self.atomic_values
+        exponents=np.array([atomic_values[element][2], atomic_values[element][4], atomic_values[element][6],
+                            atomic_values[element][8], atomic_values[element][10], atomic_values[element][12],
+                            atomic_values[element][14]])
+        return exponents
     def _weights(self, element):
 
         atomic_values = self.atomic_values
