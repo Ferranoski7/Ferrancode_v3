@@ -696,13 +696,15 @@ class ElectronicDensity(object):
         y = cs(x) * valence
         return y, x
 
-    def grid(self, step=0.1):
+    def grid(self, step=0.1,center=True):
         atomic_values = self.atomic_values
         sym_l = self.molecule.elements
         coord_a = np.array(self.molecule.coordinates)
         cm = self.mass_center()
         # --------------------  Center of mass system ----------------------
-        coord_cma = coord_a - cm
+        if center:
+            coord_cma = coord_a - cm
+        else: coord_cma = coord_a
         a2au = 1.889725
         coord_cm = coord_cma * a2au
         # ---------------------- Electronic density --------------------------

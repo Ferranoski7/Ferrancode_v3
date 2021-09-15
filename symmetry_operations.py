@@ -28,7 +28,7 @@ class SymOp(object):
         for i in range(nat):
             num_weights1=self.elden.num_weights(sym_l[i])
             for j in range(nat):
-                num_weights2 = self.elden.num_weights(sym_l[i])
+                num_weights2 = self.elden.num_weights(sym_l[j])
                 for k in range(num_weights1):
                     for l in range(num_weights2):
                         a = 2 * atomic_values[sym_l[i]][2 * (k + 1)]
