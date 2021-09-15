@@ -25,11 +25,6 @@ basis = {
 
 alpha_mo_coeff = [[]]
 atoms_data = []
-totale = 0
-for atom in range(len(sym_l)):
-    element = sym_l[atom]
-    totale += benzene.atomic_values[element][0]
-
 for atom in range(len(sym_l)):
     shells_data = []
     element = sym_l[atom]

@@ -486,7 +486,7 @@ class ElectronicDensity(object):
         atomic_values = self.atomic_values
         if atomic_values[element][15] == 0:
             total = 6
-        if atomic_values[element][13] == 0:
+        elif atomic_values[element][13] == 0:
             total = 5
         elif atomic_values[element][11] == 0:
             total = 4
