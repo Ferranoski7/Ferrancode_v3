@@ -48,6 +48,44 @@ class SymOp(object):
                         selfsim = selfsim + normi * normj * coef * ex
         return selfsim
 
+    def analytic_cosymlib_integral(self, coordinates=None, axis=[0, 0, 1], angle=0, cm=None):  # Add molecule and the angle you want to check its selfsymilarity with
+        atomic_values = self.elden.atomic_values
+        sym_l = self.molecule.elements
+        nat = len(sym_l)
+        coord_a = coordinates
+
+        if coordinates is None:
+            coord_a = np.array(self.molecule.coordinates)
+        if cm is None:
+            cm = np.array(self.elden.mass_center())
+        # --------------------  Center of mass system ----------------------
+        coord_cma = coord_a - cm
+
+        a2au = 1.889725
+        coord_cm = coord_cma * a2au
+        coord_cmrot = rotation(coord_cm, axis, angle)
+        selfsim = 0
+        for i in range(nat):
+            num_weights1=self.elden.num_weights(sym_l[i])
+            for j in range(nat):
+                num_weights2 = self.elden.num_weights(sym_l[i])
+                for k in range(num_weights1):
+                    for l in range(num_weights2):
+                        a = 2 * atomic_values[sym_l[i]][2 * (k + 1)]
+                        b = 2 * atomic_values[sym_l[j]][2 * (l + 1)]
+
+                        normi = atomic_values[sym_l[i]][2 * (k + 1) + 1] * atomic_values[sym_l[i]][0] * (2*a / np.pi) ** (
+                                3 / 2)
+                        normj = atomic_values[sym_l[j]][2 * (l + 1) + 1] * atomic_values[sym_l[j]][0] * (2*b / np.pi) ** (
+                                3 / 2)
+
+                        coef = ((np.pi / (2*(a + b))) ** (3 / 2))/(2*np.sqrt(2))
+
+
+
+                        selfsim = selfsim + normi * normj * coef
+        return selfsim
+
     def selfsim(self, rho1, rho2, step=0.1):  # Self similarity calculation for two arrays
         sim = (rho1 * rho2 * step * step * step).sum()
         return sim

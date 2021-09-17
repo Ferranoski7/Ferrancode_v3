@@ -1,28 +1,36 @@
 import matplotlib.pyplot as plt
 from file_ed.read import read_txt
+from file_ed.read import read_xyz
 from electronic_density import ElectronicDensity
 from molecule import Molecule
 from temp import TemporalFunction
 from symmetry_operations import SymOp
 import numpy as np
 from wfnsympy import WfnSympy
+from rotation.rotate import rotation
 
-# benzene = read_txt('h2')
-benzene = Molecule(['H', 'H'], [[-1, 0, 0], [1, 0, 0]], 'H2')
+benzene = read_xyz('coord')
+#benzene = Molecule(['C', 'H'], [[-1, 0, 0], [1, 0, 0]], 'CH')
+temp = SymOp(benzene)
+print(temp.analytic_selfsym())
+
+print('---------------------------------\n Our measures:\n',
+      temp.xcy(6, 6, axis=[-1.0685,     -0.0537,      0.1921], cm=[0, 0, 0]),
+      temp.xcy(1, 6, axis=[-1.0685,     -0.0537,      0.1921], cm=[0, 0, 0]),
+      temp.xcy(1, 3, axis=[-1.0685,     -0.0537,      0.1921], cm=[0, 0, 0]),
+      temp.xcy(1, 2, axis=[-1.0685,     -0.0537,      0.1921], cm=[0, 0, 0]))
+print('---------------------------------\n Wyfnsym measures:\n')
 sym_l = benzene.elements
 coord_a = benzene.coordinates
 name = benzene.name
 
 Temp = SymOp(benzene)
-
-selfsym = SymOp(benzene).analytic_selfsym()
 benzene = ElectronicDensity(benzene)
 
 basis = {
     'name': name,
     'primitive_type': 'gaussian',
 }
-
 alpha_mo_coeff = [[]]
 atoms_data = []
 for atom in range(len(sym_l)):
@@ -33,12 +41,14 @@ for atom in range(len(sym_l)):
     p_con = []
     for shell in range(benzene.num_weights(element)):
         Element = Molecule([element], [[0, 0, 0]])
+        selfsymi = SymOp(Element).analytic_cosymlib_integral()
+        #print(selfsymi)
         expi = 2 * benzene.atomic_values[element][2 * (shell + 1)]
         coefi = benzene.atomic_values[element][2 * (shell + 1) + 1]
-        nrmi = ((expi / np.pi) ** (3 / 4))
+        nrmi = ((2*expi / np.pi) ** (3 / 4))
 
         p_exp.append(expi)
-        con_coef.append(coefi * benzene.atomic_values[element][0]*nrmi)
+        con_coef.append(coefi * benzene.atomic_values[element][0] * nrmi)
         p_con.append(0.0)
 
     # p_exp=[0.5]
@@ -54,43 +64,26 @@ for atom in range(len(sym_l)):
     atoms_data.append({'shells': shells_data,
                        'symbol': element,
                        'atomic_number': benzene.atomic_values[element][0]})
+    alpha_mo_coeff[0].append(1.0* np.sqrt(selfsymi))
 
-    alpha_mo_coeff[0].append(1.0)
-    # alpha_mo_coeff[1].append(1.0)
-
+print(alpha_mo_coeff)
 basis['atoms'] = atoms_data
 
 # print(basis)
-print(alpha_mo_coeff)
 
-symmetry = WfnSympy(coord_a, sym_l, basis, alpha_mo_coeff, group='c3', axis=[0, 0, 1], center=[0, 0, 0])
+symmetry = WfnSympy(coord_a, sym_l, basis, alpha_mo_coeff, group='c6', axis=[-1.0685,     -0.0537,      0.1921],
+                    center=[0, 0, 0])
 
-print(symmetry._overlap_matrix)
+
+
+
+print(symmetry.mo_SOEVs_a / symmetry.mo_SOEVs_a[0][0])
 
 symmetry.print_overlap_mo_alpha()
-
-print('Selfsym=',symmetry.self_similarity,Temp.analytic_selfsym())
-
-print(Temp.xcy(2, 3))
-# print(Temp.xcy(1, 2, axis=[0, 0, 1]))
-print((2.032/ 0.547) ** -1)
-
-
 
 exit()
 from scipy import integrate
 
-# overlap matrix
-s = np.array([[1.0, 0.6872892787909739],
-              [0.6872892787909739, 1.0]])
-print('Overlap test')
-print(s)
-
-coef = [[1, 1], [1, 1]]
-dot = np.dot(coef, np.dot(s, coef))
-print('dot', dot)
-coef = np.array(coef) / np.sqrt(dot)
-print(coef)
 
 
 def g1(x, y, z, px, py, pz, exp):
@@ -107,7 +100,7 @@ def f2(x, y, z):
         coefi = basis['atoms'][0]['shells'][0]['con_coefficients'][i]
         gaus1 += coefi * g1(x, y, z, -1, 0, 0, expi)
 
-    return gaus1 / np.sqrt(3.481191762572077)
+    return gaus1/np.sqrt(13.161381648762054)
 
 
 def f3(x, y, z):
@@ -116,10 +109,10 @@ def f3(x, y, z):
         coefi = basis['atoms'][1]['shells'][0]['con_coefficients'][i]
         expi = basis['atoms'][1]['shells'][0]['p_exponents'][i]
         gaus2 += coefi * g1(x, y, z, 1, 0, 0, expi)
-    return gaus2 / np.sqrt(3.481191762572077)
+    return gaus2/np.sqrt(0.015284621636345874)
 
 
-#f = lambda x, y, z:   f2(x, y, z)**2
+#f = lambda x, y, z:   f3(x, y, z)**2
 
 f = lambda x, y, z: (f2(x, y, z) + f3(x, y, z)) ** 2
 
@@ -133,7 +126,6 @@ z2 = 10
 print(basis)
 integral = integrate.tplquad(f, z1, z2, y1, y2, x1, x2)
 print('integral', integral[0])
-print(Temp.analytic_selfsym())
 
 exit()
 

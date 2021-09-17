@@ -9,9 +9,10 @@ def rotation_z(position,angle):
 def rotation(position,axis,angle):
     c=np.cos(angle)
     s=np.sin(angle)
-    x=axis[0]
-    y=axis[1]
-    z=axis[2]
+    value=np.sqrt(axis[0]**2+axis[1]**2+axis[2]**2)
+    x=axis[0]/value
+    y=axis[1]/value
+    z=axis[2]/value
 
     rotated=np.zeros((position.shape[0],position.shape[1]))
 
